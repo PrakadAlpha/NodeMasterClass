@@ -4,6 +4,8 @@ const StringDecoder = require('string_decoder').StringDecoder;
 const env = require('./config');
 const https = require('https');
 const fs = require('fs');
+const handlers = require('./lib/handlers');
+const helpers = require('./lib/helpers');
 // const _data = require('./lib/data');
 
 
@@ -14,7 +16,7 @@ const fs = require('fs');
 // _data.read('test', 'newFile',(err, data) => {
 //   console.log("This is the error: ",err, "this is the data: ", data);  
 // }); 
-// _data.update('test', 'newFile', {'keerthi':'babygirl'}, (err) => {
+// _data.update('test', 'newFile', {'john':'doe'}, (err) => {
 //   console.log("This is the error: ",err);  
 // }); 
 // _data.delete('test', 'newFile',(err) => {
@@ -84,7 +86,7 @@ req.on('end', function() {
       'queryString' : queryString,
       'method' : method,
       'headers' : headers,
-      'payload' : buffer
+      'payload' : helpers.parseJsonToObject(buffer)
     };
 
     // Route the request to the handler specified in the router
@@ -112,27 +114,9 @@ req.on('end', function() {
 
 }
 
-
-// Define all the handlers
-let handlers = {};
-
-// Sample handler
-handlers.sample = (data,callback) => {
-  callback(406,{'name':'sample handler'});
-};
-
-// Not found handler
-handlers.notFound = (data,callback) => {
-  callback(404);
-};
-
-
-handlers.ping = (data,callback) => {
-  callback(200);
-};
-
 // Define the request router
 let router = {
   'sample' : handlers.sample,
-  'ping' : handlers.ping
+  'ping' : handlers.ping,
+  'users': handlers.users
 };
