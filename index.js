@@ -1,10 +1,39 @@
 const http = require('http');
 const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
+const env = require('./config');
+const https = require('https');
+const fs = require('fs');
 
 let httpServer = http.createServer((req,res) => {
+  unifiedServer(req, res);
+});
 
-// Parse the url
+// Start the server
+httpServer.listen(env.httpPort,() => {
+  console.log('Server is running on ' + env.httpPort + ' in a ' + env.envName + ' mode..');
+});
+
+
+httpsServerOptions = {
+  'cert' : fs.readFileSync('./https/cert.pem'),
+  'key' : fs.readFileSync('./https/key.pem')
+}
+
+
+
+let httpsServer = https.createServer(httpsServerOptions, (req,res) => {
+  unifiedServer(req, res);
+});
+
+httpsServer.listen(env.httpsPort,() => {
+  console.log('Server is running on ' + env.httpsPort + ' in a ' + env.envName + ' mode..');
+});
+
+
+function unifiedServer(req, res){
+
+  // Parse the url
 let parsedUrl = url.parse(req.url, true);
 
 // Get the path
@@ -55,6 +84,7 @@ req.on('end', function() {
       let payloadString = JSON.stringify(payload);
 
       // Return the response
+      res.setHeader('Content-type', 'application/json');
       res.writeHead(statusCode);
       res.end(payloadString);
       console.log("Returning this response: ",statusCode,payloadString);
@@ -62,12 +92,10 @@ req.on('end', function() {
     });
 
 });
-});
 
-// Start the server
-httpServer.listen(3000,() => {
-  console.log('The server is running on 3000');
-});
+
+}
+
 
 // Define all the handlers
 let handlers = {};
@@ -83,12 +111,12 @@ handlers.notFound = (data,callback) => {
 };
 
 
-handlers.prakad = (data,callback) => {
-  callback(403, {'name':'Prakadhesh'})
+handlers.ping = (data,callback) => {
+  callback(200);
 };
 
 // Define the request router
 let router = {
   'sample' : handlers.sample,
-  'prakad' : handlers.prakad
+  'ping' : handlers.ping
 };
