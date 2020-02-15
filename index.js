@@ -4,6 +4,22 @@ const StringDecoder = require('string_decoder').StringDecoder;
 const env = require('./config');
 const https = require('https');
 const fs = require('fs');
+// const _data = require('./lib/data');
+
+
+// @TODO delete this
+// _data.create('test', 'newFile', {'prakad':'alpha'}, (err) => {
+//   console.log("This is the error: ",err);  
+// }); 
+// _data.read('test', 'newFile',(err, data) => {
+//   console.log("This is the error: ",err, "this is the data: ", data);  
+// }); 
+// _data.update('test', 'newFile', {'keerthi':'babygirl'}, (err) => {
+//   console.log("This is the error: ",err);  
+// }); 
+// _data.delete('test', 'newFile',(err) => {
+//   console.log("This is the error: ",err);  
+// }); 
 
 let httpServer = http.createServer((req,res) => {
   unifiedServer(req, res);
